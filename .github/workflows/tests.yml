@@ -1,0 +1,61 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unittest:
+    name: ${{ matrix.os }} / py${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      # 刻意不装任何第三方包：公开版的核心承诺就是「裸 Python 也能跑」。
+      # 这一步失败，说明核心逻辑偷偷引入了外部依赖。
+      - name: Core tests (zero dependencies)
+        run: python -m unittest discover -s tests -v
+
+      - name: Heuristic self-check
+        run: python detector.py
+
+      - name: Watermark self-check
+        run: python watermark.py
+
+  optional-deps:
+    name: with onnxruntime / pypdf
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install optional runtime deps
+        run: pip install -r requirements.txt
+
+      # 没有权重时模型测试自动跳过，这里只验证「装了依赖但缺权重」不会崩
+      - name: Tests with optional deps present
+        run: python -m unittest discover -s tests -v
+
+      - name: Server smoke test
+        run: |
+          python app.py --port 8765 &
+          sleep 5
+          curl -sf http://127.0.0.1:8765/api/health
+          curl -sf -X POST http://127.0.0.1:8765/api/analyze \
+            -H "Content-Type: application/json" \
+            -d '{"text":"综上所述，本研究具有重要的理论意义与实践价值。"}'

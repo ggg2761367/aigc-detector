@@ -1,5 +1,7 @@
 # AIGC Detector
 
+[![tests](https://github.com/ggg2761367/aigc-detector/actions/workflows/tests.yml/badge.svg)](https://github.com/ggg2761367/aigc-detector/actions/workflows/tests.yml)
+
 **A local, explainable AI-text detector that runs on your own CPU — no network, no API key, no upload.**
 
 Everything happens on your machine. You paste text, you get a score, a sentence-level heatmap, a
