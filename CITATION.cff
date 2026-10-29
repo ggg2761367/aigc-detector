@@ -13,6 +13,11 @@ authors:
     alias: ggg2761367
 version: v1.0.3
 date-released: "2026-10-29"
+doi: 10.5281/zenodo.23760176      # 概念 DOI：始终指向最新版
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23760177  # 版本 DOI：锁定 v1.0.3
+    description: "Version-specific DOI for v1.0.3"
 license: MIT
 repository-code: "https://github.com/ggg2761367/aigc-detector"
 url: "https://github.com/ggg2761367/aigc-detector"

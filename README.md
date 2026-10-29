@@ -1,8 +1,13 @@
 # AIGC Detector
 
 [![tests](https://github.com/ggg2761367/aigc-detector/actions/workflows/tests.yml/badge.svg)](https://github.com/ggg2761367/aigc-detector/actions/workflows/tests.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23760176.svg)](https://doi.org/10.5281/zenodo.23760176)
 
 **A local, explainable AI-text detector that runs on your own CPU — no network, no API key, no upload.**
+
+<!-- 截图放这里：存成 docs/screenshot.png 后，删掉下一行的注释符号即可
+![AIGC Detector 界面](docs/screenshot.png)
+-->
 
 Everything happens on your machine. You paste text, you get a score, a sentence-level heatmap, a
 feature-contribution breakdown, and a scan for invisible-character channels. The whole pipeline is
@@ -214,13 +219,15 @@ If this software contributes to your research, please cite it. GitHub renders a
   author  = {ggg2761367},
   title   = {AIGC Detector: a local, explainable AI-generated-text detector},
   year    = {2026},
+  doi     = {10.5281/zenodo.23760176},
   url     = {https://github.com/ggg2761367/aigc-detector},
-  version = {v1.0.3},
-  note    = {Archived on Zenodo; DOI pending first mint}
+  version = {v1.0.3}
 }
 ```
 
-A permanent DOI will be added here once the Zenodo archive is linked.
+Archived on Zenodo. `10.5281/zenodo.23760176` is the **concept DOI** — it always resolves to the
+latest version, so cite it unless you need to pin v1.0.3 exactly
+(`10.5281/zenodo.23760177`).
 
 ### License
 
@@ -433,13 +440,14 @@ scripts/             download_model.py
   author  = {ggg2761367},
   title   = {AIGC Detector: a local, explainable AI-generated-text detector},
   year    = {2026},
+  doi     = {10.5281/zenodo.23760176},
   url     = {https://github.com/ggg2761367/aigc-detector},
-  version = {v1.0.3},
-  note    = {Archived on Zenodo; DOI pending first mint}
+  version = {v1.0.3}
 }
 ```
 
-Zenodo 存档链接好后，这里会补上永久 DOI。
+已存档于 Zenodo。`10.5281/zenodo.23760176` 是**概念 DOI**，永远指向最新版本，一般引这个；
+需要精确锁定 v1.0.3 时用 `10.5281/zenodo.23760177`。
 
 ### 许可
 
