@@ -1,5 +1,6 @@
 # 图片资源
 
-此目录存放 README 引用的截图。
+README 引用的截图。
 
-- `screenshot.png` —— 主界面截图，README 顶部引用（1280×800 左右，浅色主题）
+- `screenshot.png` —— 主界面（1632×1191），README 顶部
+- `principles.png` —— 「原理说明」弹层（1045×1254），中文段「它做什么」下方

@@ -5,9 +5,7 @@
 
 **A local, explainable AI-text detector that runs on your own CPU — no network, no API key, no upload.**
 
-<!-- 截图放这里：存成 docs/screenshot.png 后，删掉下一行的注释符号即可
-![AIGC Detector 界面](docs/screenshot.png)
--->
+<img src="docs/screenshot.png" alt="AIGC Detector 界面：左侧粘贴文本，右侧显示判定结果" width="820">
 
 Everything happens on your machine. You paste text, you get a score, a sentence-level heatmap, a
 feature-contribution breakdown, and a scan for invisible-character channels. The whole pipeline is
@@ -259,6 +257,8 @@ Issues and corrections welcome — especially if a citation or license note is w
 | 隐藏字符扫描 | Unicode Tag 字符、变体选择符长序列、双向控制符、零宽字符、私用区字符、跨脚本同形字；载荷会被解码并当文本显示。 |
 | 文档上传 | `.docx`（标准库 zip+XML）、`.pdf`（pypdf 提取文本层）、`.txt`/`.md`/`.csv`/`.rtf`；扫描件会明确报「无文本层」。 |
 | 长文档 | 单次最多 40 万字（约 200 页）。超过 600 句时句间比较从精确两两比对降级为窗口抽样，MATTR 改等距取样。 |
+
+<img src="docs/principles.png" alt="原理说明：公开方案的核心信号与本项目的对应实现" width="720">
 
 ### 它**不是**什么
 
