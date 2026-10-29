@@ -72,12 +72,14 @@ To turn on the neural classifier and PDF support:
 python -m venv .venv
 .venv\Scripts\activate          # Windows;  source .venv/bin/activate on macOS/Linux
 pip install -r requirements.txt
-python scripts/download_model.py --repo your-name/aigc-detector-onnx
+python scripts/download_model.py      # set DEFAULT_REPO once, at the top of the script
 python launcher.py
 ```
 
-`scripts/download_model.py` also accepts `--src <dir>` for offline installs and
-`--endpoint https://hf-mirror.com` if you are behind the GFW. `--check` verifies what you have.
+`scripts/download_model.py` also accepts `--src <dir>` for offline installs,
+`--endpoint https://hf-mirror.com` if you are behind the GFW, and `--check` to list what you have.
+The weights repo is the `DEFAULT_REPO` constant at the top of that script — set it once, and every
+command keeps working.
 
 #### Option C — Docker
 
@@ -95,7 +97,7 @@ Weights are ~130 MB and are **not** in the repo. Three ways:
 
 | Source | Command |
 |:---|:---|
-| HuggingFace | `python scripts/download_model.py --repo your-name/aigc-detector-onnx` |
+| HuggingFace | `python scripts/download_model.py` |
 | Mirror (China) | add `--endpoint https://hf-mirror.com` |
 | Release zip | unzip, then `python scripts/download_model.py --src path/to/onnx` |
 
@@ -263,12 +265,13 @@ python launcher.py          # 自动找空闲端口 + 打开浏览器
 python -m venv .venv
 .venv\Scripts\activate          # Windows；macOS/Linux 用 source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/download_model.py --repo 你的用户名/aigc-detector-onnx
+python scripts/download_model.py      # 权重仓库在脚本顶部 DEFAULT_REPO 里改一次
 python launcher.py
 ```
 
 下载脚本还支持 `--src <目录>` 离线安装、`--endpoint https://hf-mirror.com` 走镜像、
-`--check` 检查本地文件是否齐备。
+`--check` 只列清单不下载。**权重仓库地址只写在一个地方**：脚本顶部的 `DEFAULT_REPO`，
+换成你自己的仓库后，所有命令都不用带 `--repo`。
 
 #### 方式 C — Docker
 
@@ -286,7 +289,7 @@ docker run --rm -p 8765:8765 -v "$PWD/models:/app/models:ro" aigc-detector
 
 | 来源 | 命令 |
 |:---|:---|
-| HuggingFace | `python scripts/download_model.py --repo 你的用户名/aigc-detector-onnx` |
+| HuggingFace | `python scripts/download_model.py` |
 | 国内镜像 | 后面加 `--endpoint https://hf-mirror.com` |
 | Release 压缩包 | 解压后 `python scripts/download_model.py --src 解压目录/onnx` |
 

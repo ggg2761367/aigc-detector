@@ -32,6 +32,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DEST = ROOT / "models" / "distilmbert-aigc-onnx"
 
+# ← 发布前把这一行改成你自己的权重仓库，改完 README 里的命令就不用带 --repo 了
+DEFAULT_REPO = "your-name/aigc-detector-onnx"
+
 # 少一个文件就跑不起来，或者校准会静默降级，所以这里全部列出
 REQUIRED = [
     "onnx_manifest.json",   # 告诉加载器权重文件名与窗口参数
@@ -122,7 +125,8 @@ def fetch(url: str, out: Path, force: bool = False) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="下载 ONNX 权重（零依赖）")
-    ap.add_argument("--repo", help="HuggingFace 仓库，如 your-name/aigc-detector-onnx")
+    ap.add_argument("--repo", default=DEFAULT_REPO,
+                    help=f"HuggingFace 仓库，默认 {DEFAULT_REPO}（改脚本顶部常量即可）")
     ap.add_argument("--revision", default="main", help="分支/标签，默认 main")
     ap.add_argument("--endpoint", default=os.environ.get("HF_ENDPOINT", "https://huggingface.co"),
                     help="下载端点，默认读 HF_ENDPOINT")
@@ -151,7 +155,12 @@ def main() -> int:
                 print(f"  [copy] {f}  {human(p.stat().st_size)}")
             elif f in REQUIRED:
                 raise SystemExit(f"[!] 源目录缺必需文件：{f}")
-    elif args.repo:
+    else:
+        if args.repo == DEFAULT_REPO:
+            print(f"[!] 仓库名还是占位符 {DEFAULT_REPO}")
+            print("    先按 README 把权重传到 HuggingFace，再改本脚本顶部的 DEFAULT_REPO，")
+            print("    或者直接加 --repo 你的用户名/aigc-detector-onnx 覆盖。")
+            print()
         base = f"{args.endpoint.rstrip('/')}/{args.repo}/resolve/{args.revision}"
         print(f"[*] 来源：{base}")
         for f in REQUIRED + OPTIONAL:
@@ -162,10 +171,6 @@ def main() -> int:
                     print(f"  [warn] {f} 未取到，将跳过（校准会降级为未校准）")
                     continue
                 raise
-    else:
-        ap.print_help()
-        print("\n[!] 需要 --repo 或 --src 之一。")
-        return 2
 
     print("\n[*] 结果：")
     return report(dest)
