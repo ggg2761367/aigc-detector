@@ -26,7 +26,7 @@ if errorlevel 1 (
 
 if not exist "models\distilmbert-aigc-onnx\model_int8.onnx" (
     echo [!] 没找到神经分类器权重，将以启发式模式启动（功能完整，精度略低）。
-    echo     完整版：python scripts\download_model.py --repo 你的用户名/aigc-detector-onnx
+    echo     完整版：python scripts\download_model.py（自动从 GitHub Release 下载 85MB 权重）
     echo.
 )
 
