@@ -5,7 +5,7 @@
 
 **A local, explainable AI-text detector that runs on your own CPU — no network, no API key, no upload.**
 
-<img src="docs/result-ai.png" alt="AIGC Detector：一段 AI 生成的教育类文字被判为 97.6%，右侧给出特征贡献条形图与句级热力图" width="880">
+<img src="https://gcore.jsdelivr.net/gh/ggg2761367/aigc-detector@main/docs/result-ai.png" alt="AIGC Detector：一段 AI 生成的教育类文字被判为 97.6%，右侧给出特征贡献条形图与句级热力图" width="880">
 
 Everything happens on your machine. You paste text, you get a score, a sentence-level heatmap, a
 feature-contribution breakdown, and a scan for invisible-character channels. The whole pipeline is
@@ -35,7 +35,7 @@ readable source, and the 130 MB neural classifier is optional.
 The same engine on human writing — everyday prose scores 18.6%: the "AI cliché density" and
 "connective ratio" features drop to zero, and most sentences come back green.
 
-<img src="docs/result-human.png" alt="The same detector scoring human writing at 18.6%, with most sentences marked normal" width="720">
+<img src="https://gcore.jsdelivr.net/gh/ggg2761367/aigc-detector@main/docs/result-human.png" alt="The same detector scoring human writing at 18.6%, with most sentences marked normal" width="720">
 
 ### What it is **not**
 
@@ -266,9 +266,9 @@ Issues and corrections welcome — especially if a citation or license note is w
 同一套算法跑人工写作（上面那张是 AI 样例，这张是随手记的日常文字）：分数掉到 18.6%，
 「AI 套话密度」和「衔接词占比」两条特征直接归零，句级热力图基本全绿。
 
-<img src="docs/result-human.png" alt="同一检测器对人工写作的判定：18.6%，多数句子判为正常" width="720">
+<img src="https://gcore.jsdelivr.net/gh/ggg2761367/aigc-detector@main/docs/result-human.png" alt="同一检测器对人工写作的判定：18.6%，多数句子判为正常" width="720">
 
-<img src="docs/principles.png" alt="原理说明：公开方案的核心信号与本项目的对应实现" width="720">
+<img src="https://gcore.jsdelivr.net/gh/ggg2761367/aigc-detector@main/docs/principles.png" alt="原理说明：公开方案的核心信号与本项目的对应实现" width="720">
 
 ### 它**不是**什么
 
