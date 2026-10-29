@@ -1,25 +1,21 @@
 cff-version: 1.2.0
-message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
-title: AIGC Detector
-subtitle: A local, explainable AI-generated-text detector that runs on CPU
+message: "If you use this software, please cite it as below."
+title: "AIGC Detector: a local, explainable AI-generated-text detector"
+abstract: >-
+  An open-source AI-generated-text detector combining a zero-dependency
+  heuristic engine (surface statistics, lexical markers, burstiness) with an
+  optional ONNX int8 multilingual classifier. Runs fully offline on CPU; no
+  text is uploaded anywhere. Includes document parsing (docx/pdf),
+  invisible-character watermark detection, sentence-level highlights, and
+  calibration support.
 authors:
-  - alias: ggg2761367
-    name-suffix: "(replace with your real name)"
-version: v1.0.1
+  - family-names: ggg2761367
+    alias: ggg2761367
+version: v1.0.2
 date-released: "2026-10-29"
 license: MIT
 repository-code: "https://github.com/ggg2761367/aigc-detector"
 url: "https://github.com/ggg2761367/aigc-detector"
-abstract: >-
-  An open-source AI-generated-text detector combining a
-  zero-dependency heuristic engine (surface statistics,
-  lexical markers, burstiness) with an optional ONNX int8
-  multilingual classifier. Runs fully offline on CPU; no
-  text is uploaded anywhere. Includes document parsing
-  (docx/pdf), invisible-character watermark detection,
-  sentence-level highlights, and calibration support.
 keywords:
   - AI-generated text detection
   - machine-generated text
