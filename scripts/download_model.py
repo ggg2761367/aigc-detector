@@ -25,6 +25,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import sys
@@ -89,6 +90,40 @@ def report(dest: Path) -> int:
     else:
         print("\n[+] 齐了。运行 python app.py 即可加载神经分类器。")
     return 1 if miss else 0
+
+
+def resolve_release_url(repo: str, tag: str, asset: str, pinned: bool = False) -> str:
+    """找出真正挂着 asset 的那个 Release 的下载地址。
+
+    直接拼 /releases/download/<tag>/<asset> 太脆：tag 大小写不同（v1.0.0 与 V1.0.0
+    在 GitHub 上是两个 tag）、后来的版本忘了重传资产，都会 404。所以默认走 API
+    按「最新 → 最旧」扫一遍，谁身上有这个资产就用谁；扫不到再退回 tag 拼接。
+    """
+    direct = f"https://github.com/{repo}/releases/download/{tag}/{asset}"
+    if pinned:
+        return direct
+
+    api = f"https://api.github.com/repos/{repo}/releases?per_page=30"
+    req = urllib.request.Request(api, headers={**UA, "Accept": "application/vnd.github+json"})
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        req.add_header("Authorization", f"Bearer {token}")
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            releases = json.load(r)
+    except Exception as exc:                                   # 离线 / 限流 / 无 API
+        print(f"  [warn] 查 Release 列表失败（{exc}），按 tag 直连")
+        return direct
+
+    for rel in releases or []:
+        names = [a.get("name", "") for a in rel.get("assets", [])]
+        if asset in names:
+            if rel.get("tag_name") != tag:
+                print(f"  [info] 资产在 {rel.get('tag_name')} 上（配置里是 {tag}），已自动改用")
+            return rel["assets"][names.index(asset)]["browser_download_url"]
+
+    print(f"  [warn] 没有任何 Release 挂着 {asset}，尝试 latest 与 {tag}")
+    return f"https://github.com/{repo}/releases/latest/download/{asset}"
 
 
 def stream_to_file(url: str, out: Path, force: bool = False, label: str = "") -> Path:
@@ -218,7 +253,8 @@ def main() -> int:
     ap.add_argument("--hf-endpoint", default=os.environ.get("HF_ENDPOINT", "https://huggingface.co"),
                     help="HF 端点，默认读 HF_ENDPOINT")
     ap.add_argument("--gh-repo", default=DEFAULT_GH_REPO, help=f"GitHub 仓库，默认 {DEFAULT_GH_REPO}")
-    ap.add_argument("--tag", default=DEFAULT_TAG, help=f"Release 标签，默认 {DEFAULT_TAG}")
+    ap.add_argument("--tag", default=DEFAULT_TAG,
+                    help=f"Release 标签，默认自动探测（配置项 {DEFAULT_TAG}）")
     ap.add_argument("--asset", default=DEFAULT_ASSET, help=f"Release 资产名，默认 {DEFAULT_ASSET}")
     ap.add_argument("--dest", default=str(DEFAULT_DEST), help="目标目录")
     ap.add_argument("--force", action="store_true", help="已有文件也重下")
@@ -239,7 +275,9 @@ def main() -> int:
         elif args.hf_repo:
             from_huggingface(args.hf_repo, "main", args.hf_endpoint, dest, args.force)
         else:
-            url = f"https://github.com/{args.gh_repo}/releases/download/{args.tag}/{args.asset}"
+            url = resolve_release_url(args.gh_repo, args.tag, args.asset,
+                                      pinned=args.tag != DEFAULT_TAG)
+            print(f"[*] 来源：{url}")
             download_and_extract(url, dest, args.force)
     except KeyboardInterrupt:
         print("\n[!] 已中断。")
