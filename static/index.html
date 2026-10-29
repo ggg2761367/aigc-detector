@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIGC Detector · 本地可解释检测</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <h1>AIGC 检测器</h1>
+    <span class="tag">本地运行 · 可解释 · 不联网</span>
+  </div>
+  <button id="btnHow" class="ghost" type="button">原理说明</button>
+</header>
+
+<main class="layout">
+  <!-- 左：输入 -->
+  <section class="pane input-pane">
+    <div class="pane-head">
+      <span>待检测文本</span>
+      <span id="counter" class="muted">0 字</span>
+    </div>
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" hidden
+             accept=".docx,.pdf,.txt,.md,.markdown,.rtf,.csv,.log">
+      <button id="btnFile" class="ghost" type="button">上传文档</button>
+      <span class="dz-hint muted small">
+        支持 .docx / .pdf / .txt / .md / .rtf（旧版 .doc 请另存为 .docx）
+      </span>
+      <span id="fileinfo" class="muted small"></span>
+    </div>
+    <textarea id="input" spellcheck="false"
+      placeholder="粘贴中文或英文文本，或上传文档；整篇论文直接拖进来即可……"></textarea>
+    <div class="actions">
+      <button id="btnAnalyze" class="primary" type="button">开始检测</button>
+      <button id="btnSampleAI" class="ghost" type="button">AI 样例</button>
+      <button id="btnSampleHuman" class="ghost" type="button">人类样例</button>
+      <button id="btnClear" class="ghost" type="button">清空</button>
+    </div>
+    <p class="hint">检测在本地完成，文本不会离开这台机器。Ctrl / ⌘ + Enter 快捷提交。</p>
+  </section>
+
+  <!-- 右：结果 -->
+  <section class="pane result-pane">
+    <div id="empty" class="empty">
+      <div class="empty-icon">◔</div>
+      <p>提交文本后在这里查看判定结果</p>
+    </div>
+
+    <div id="result" class="result hidden">
+      <div class="score-block">
+        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+          <circle id="ringFg" class="ring-fg" cx="60" cy="60" r="52"></circle>
+        </svg>
+        <div class="score-text">
+          <div id="scoreNum" class="score-num">0<span>%</span></div>
+          <div id="verdict" class="verdict">—</div>
+          <div id="confidence" class="muted small">—</div>
+        </div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="section">
+        <h2>特征贡献（启发式）</h2>
+        <p class="muted small">向右 = 推向「AI 生成」，向左 = 推向「人类撰写」</p>
+        <div id="contribs" class="contribs"></div>
+      </div>
+
+      <div class="section">
+        <h2>句级热力图（启发式）</h2>
+        <p class="muted small">
+          <span class="legend high"></span>高度疑似
+          <span class="legend mid"></span>可疑
+          <span class="legend low"></span>正常
+        </p>
+        <div id="heatmap" class="heatmap"></div>
+      </div>
+
+      <div class="section">
+        <h2>命中词表</h2>
+        <div id="markers" class="markers"></div>
+      </div>
+
+      <div class="section">
+        <h2>隐藏标记 / 水印痕迹</h2>
+        <p class="muted small">
+          只覆盖文本内的不可见字符信道；SynthID 类统计水印与 C2PA 元数据需持钥或文件级验证。
+        </p>
+        <div id="watermark" class="watermark"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 原理弹层 -->
+<div id="how" class="modal hidden">
+  <div class="modal-box">
+    <button id="btnCloseHow" class="modal-x" type="button">×</button>
+    <h2>这套检测的底层逻辑</h2>
+    <table>
+      <thead><tr><th>公开方案</th><th>核心信号</th><th>本项目的实现</th></tr></thead>
+      <tbody>
+        <tr><td>困惑度 + 突发性</td><td>用参考模型衡量"有多好猜"，再看句长方差</td><td><code>_lm_perplexity</code> / 句长变异系数</td></tr>
+        <tr><td>逐句分类 + 文档聚合</td><td>每句一个概率，再合成整篇分数</td><td>句级 logit + 相邻句平滑 + 文档聚合</td></tr>
+        <tr><td>多生成器训练的分类器</td><td>训练集覆盖多代模型，输出带段落高亮</td><td>句级热力图 + 分档阈值</td></tr>
+        <tr><td>中文套话词表 + 疑似占比</td><td>套话集中度高，逐段判疑似再算占比</td><td><code>MARKERS_CN</code> + <code>mixed_ratio</code></td></tr>
+      </tbody>
+    </table>
+    <p class="muted small">
+      以上描述来自公开论文与产品公开文档，本项目未逆向、也未调用任何商业服务的接口或权重。
+    </p>
+    <h3>为什么「低困惑度」指向 AI</h3>
+    <p>语言模型采样时倾向高概率词，所以它写出的文本对自己（以及同类模型）更「好猜」。
+       困惑度就是「平均每个词有多难猜」——数值越低，越像模型产物。人类写作会有突发的
+       跳跃、口语、错配和罕见搭配，困惑度高且方差大，这就是所谓的 burstiness。</p>
+    <h3>本实现的边界</h3>
+    <p>商业产品用的是在千万级标注语料上训练的 Transformer 分类器，权重是学出来的。
+       这里用零依赖的特征工程加手工标定逻辑回归，近似同一套信号维度，<strong>结果不应
+       作为任何学术或法律结论的依据</strong>。真正的差异在训练，不在原理。</p>
+    <h3>非统计类：不可见字符信道（已实现）</h3>
+    <p>还有一类不是「猜」出来的，而是<em>写入端</em>埋进去的。本页现在检测其中的文本载波：
+       Unicode Tag 字符、变体选择符长序列、零宽字符、双向控制符、私用区字符、跨脚本同形字。
+       这些字符在浏览器里完全不显示，却能把 ASCII 载荷藏进正文，常见于提示词注入与文档指纹。</p>
+    <p>仍<strong>无法</strong>检测的两类：Google SynthID-Text 这类<em>统计水印</em>需要在采样时
+       用密钥偏置词表，验证同样要密钥，纯文本侧拿不到；C2PA 是文件元数据，复制粘贴成纯文本
+       后就丢了。它们和风格检测是两回事，所以本页把「风格分」与「隐藏标记」分开呈现。</p>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# 运行时可选依赖（core 本身零依赖）
+#
+# 什么都不装：`python app.py` 直接可用，走启发式引擎 + docx/txt 解析。
+# 装了下面这些：自动启用神经分类器与 PDF 解析，无需改代码。
+
+# ---- 神经分类器：加载 models/ 下的 ONNX int8 权重 ----
+onnxruntime>=1.16
+tokenizers>=0.15
+
+# ---- PDF 文本层提取（扫描件仍需 OCR，本项目不做） ----
+pypdf>=3.9
+
+# ---- 桌面窗口（仅 desktop.py 需要，做免安装 exe 时用） ----
+# pywebview>=4.4
