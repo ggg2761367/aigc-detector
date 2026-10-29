@@ -72,14 +72,12 @@ To turn on the neural classifier and PDF support:
 python -m venv .venv
 .venv\Scripts\activate          # Windows;  source .venv/bin/activate on macOS/Linux
 pip install -r requirements.txt
-python scripts/download_model.py      # set DEFAULT_REPO once, at the top of the script
+python scripts/download_model.py      # 85 MB zip from GitHub Releases
 python launcher.py
 ```
 
-`scripts/download_model.py` also accepts `--src <dir>` for offline installs,
-`--endpoint https://hf-mirror.com` if you are behind the GFW, and `--check` to list what you have.
-The weights repo is the `DEFAULT_REPO` constant at the top of that script — set it once, and every
-command keeps working.
+The download script needs nothing beyond the standard library. It also takes `--src <dir>` for offline
+installs, `--url <zip>` for a self-hosted mirror, `--hf-repo` for HuggingFace, and `--check` to verify.
 
 #### Option C — Docker
 
@@ -93,15 +91,27 @@ docker run --rm -p 8765:8765 -v "$PWD/models:/app/models:ro" aigc-detector
 
 ### Get the model weights
 
-Weights are ~130 MB and are **not** in the repo. Three ways:
+Weights are 133 MB raw / 85 MB zipped and are **not** in the repo. One command does it — the default
+path is the GitHub Release, which needs no extra account:
+
+```bash
+python scripts/download_model.py
+```
 
 | Source | Command |
 |:---|:---|
-| HuggingFace | `python scripts/download_model.py` |
-| Mirror (China) | add `--endpoint https://hf-mirror.com` |
-| Release zip | unzip, then `python scripts/download_model.py --src path/to/onnx` |
+| GitHub Release (default) | `python scripts/download_model.py` |
+| Pin a version | `--tag v1.0.0` |
+| Any zip URL (CDN, mirror) | `--url https://.../aigc-detector-onnx-v1.zip` |
+| HuggingFace | `--hf-repo user/aigc-detector-onnx` |
+| Offline directory | `--src path/to/extracted/onnx` |
+| Verify what you have | `--check` |
 
-Without weights the app still works — it just runs the heuristic engine only, and the UI says so.
+The Release asset is `aigc-detector-onnx-v1.zip`. Repo, tag and asset names are three constants at the
+top of `scripts/download_model.py`, so a mirror or a new version needs a one-line change.
+
+Downloaded files land in `models/distilmbert-aigc-onnx/`, which is gitignored. Without weights the app
+still works — it just runs the heuristic engine only, and the UI says so.
 
 ### Using it
 
@@ -265,13 +275,12 @@ python launcher.py          # 自动找空闲端口 + 打开浏览器
 python -m venv .venv
 .venv\Scripts\activate          # Windows；macOS/Linux 用 source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/download_model.py      # 权重仓库在脚本顶部 DEFAULT_REPO 里改一次
+python scripts/download_model.py      # 从 GitHub Release 拉 85MB 压缩包
 python launcher.py
 ```
 
-下载脚本还支持 `--src <目录>` 离线安装、`--endpoint https://hf-mirror.com` 走镜像、
-`--check` 只列清单不下载。**权重仓库地址只写在一个地方**：脚本顶部的 `DEFAULT_REPO`，
-换成你自己的仓库后，所有命令都不用带 `--repo`。
+下载脚本本身只用标准库。另外支持 `--src <目录>` 离线安装、`--url <zip>` 自建直链、
+`--hf-repo` 走 HuggingFace、`--check` 核对文件。
 
 #### 方式 C — Docker
 
@@ -285,15 +294,26 @@ docker run --rm -p 8765:8765 -v "$PWD/models:/app/models:ro" aigc-detector
 
 ### 下载模型权重
 
-约 130MB，**不在仓库里**。三种来源：
+133MB（压缩后 85MB），**不在仓库里**。一条命令搞定，默认走 GitHub Release，不用另注册账号：
+
+```bash
+python scripts/download_model.py
+```
 
 | 来源 | 命令 |
 |:---|:---|
-| HuggingFace | `python scripts/download_model.py` |
-| 国内镜像 | 后面加 `--endpoint https://hf-mirror.com` |
-| Release 压缩包 | 解压后 `python scripts/download_model.py --src 解压目录/onnx` |
+| GitHub Release（默认） | `python scripts/download_model.py` |
+| 指定版本 | `--tag v1.0.0` |
+| 任意 zip 直链（CDN / 镜像） | `--url https://.../aigc-detector-onnx-v1.zip` |
+| HuggingFace | `--hf-repo user/aigc-detector-onnx` |
+| 离线目录 | `--src 解压后的目录` |
+| 检查本地是否齐备 | `--check` |
 
-没有权重也能用 —— 只走启发式，界面会标明当前模式。
+Release 资产名是 `aigc-detector-onnx-v1.zip`。仓库名、tag、资产名是脚本顶部三个常量，
+换镜像或换版本各改一行。
+
+文件解到 `models/distilmbert-aigc-onnx/`，该目录已被 gitignore。没有权重也能用 ——
+只走启发式，界面会标明当前模式。
 
 ### 怎么用
 
