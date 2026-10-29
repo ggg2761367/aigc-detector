@@ -11,7 +11,7 @@ abstract: >-
 authors:
   - family-names: ggg2761367
     alias: ggg2761367
-version: v1.0.2
+version: v1.0.3
 date-released: "2026-10-29"
 license: MIT
 repository-code: "https://github.com/ggg2761367/aigc-detector"

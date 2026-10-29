@@ -215,7 +215,7 @@ If this software contributes to your research, please cite it. GitHub renders a
   title   = {AIGC Detector: a local, explainable AI-generated-text detector},
   year    = {2026},
   url     = {https://github.com/ggg2761367/aigc-detector},
-  version = {v1.0.1},
+  version = {v1.0.3},
   note    = {Archived on Zenodo; DOI pending first mint}
 }
 ```
@@ -434,7 +434,7 @@ scripts/             download_model.py
   title   = {AIGC Detector: a local, explainable AI-generated-text detector},
   year    = {2026},
   url     = {https://github.com/ggg2761367/aigc-detector},
-  version = {v1.0.1},
+  version = {v1.0.3},
   note    = {Archived on Zenodo; DOI pending first mint}
 }
 ```
