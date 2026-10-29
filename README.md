@@ -204,6 +204,24 @@ training/            data prep, fine-tune, evaluate, calibrate, export
 scripts/             download_model.py
 ```
 
+### Citation
+
+If this software contributes to your research, please cite it. GitHub renders a
+**Cite this repository** button from [`CITATION.cff`](CITATION.cff); or use this BibTeX:
+
+```bibtex
+@software{aigc_detector_2026,
+  author  = {ggg2761367},
+  title   = {AIGC Detector: a local, explainable AI-generated-text detector},
+  year    = {2026},
+  url     = {https://github.com/ggg2761367/aigc-detector},
+  version = {v1.0.1},
+  note    = {Archived on Zenodo; DOI pending first mint}
+}
+```
+
+A permanent DOI will be added here once the Zenodo archive is linked.
+
 ### License
 
 Code: MIT. Weights: research / non-commercial if upstream datasets are NC. Details in
@@ -404,6 +422,24 @@ tests/               41 项 unittest
 training/            数据准备 / 微调 / 评测 / 校准 / 导出
 scripts/             download_model.py
 ```
+
+### 引用
+
+如果本项目对你的研究有帮助，欢迎引用。GitHub 会根据 [`CITATION.cff`](CITATION.cff)
+在仓库首页渲染 **Cite this repository** 按钮，点开即可复制；也可用这条 BibTeX：
+
+```bibtex
+@software{aigc_detector_2026,
+  author  = {ggg2761367},
+  title   = {AIGC Detector: a local, explainable AI-generated-text detector},
+  year    = {2026},
+  url     = {https://github.com/ggg2761367/aigc-detector},
+  version = {v1.0.1},
+  note    = {Archived on Zenodo; DOI pending first mint}
+}
+```
+
+Zenodo 存档链接好后，这里会补上永久 DOI。
 
 ### 许可
 
